@@ -20,6 +20,14 @@ class AwsSdkV2CommandsTest < Test::Unit::TestCase
     assert(bucket_names.index("v2_create_bucket") >= 0)
   end
 
+  def test_create_bucket_without_underscore
+    bucket = @resource.create_bucket(bucket: 'v2-create-bucket')
+    assert_not_nil bucket
+
+    bucket_names = @resource.buckets.map(&:name)
+    assert(bucket_names.index("v2-create-bucket") >= 0)
+  end
+
   def test_destroy_bucket
     @bucket.delete
 
