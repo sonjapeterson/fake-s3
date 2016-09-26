@@ -38,6 +38,28 @@ class AwsSdkV2CommandsTest < Test::Unit::TestCase
     end
   end
 
+  def test_destroy_bucket_via_subdomain
+    bucket = @resource.create_bucket(bucket: 'v2-create-bucket')
+    assert_not_nil bucket
+    bucket.delete!
+  end
+
+  def test_destroy_objects_via_bucket_subdomain
+    bucket = @resource.create_bucket(bucket: 'v2-create-bucket')
+    assert_not_nil bucket
+
+    object = bucket.object('exists')
+    object.put(body: 'test')
+
+    assert_equal 'test', object.get.body.string
+
+    object.delete
+
+    assert_raise Aws::S3::Errors::NoSuchKey do
+      object.get
+    end
+  end
+
   def test_create_object
     object = @bucket.object('key')
     object.put(body: 'test')

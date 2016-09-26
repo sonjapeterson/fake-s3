@@ -330,6 +330,7 @@ module FakeS3
       path = webrick_req.path
       path_len = path.size
       query = webrick_req.query
+      puts s_req.bucket
       if path == "/" and s_req.is_path_style
         # Probably do a 404 here
       else
@@ -340,9 +341,7 @@ module FakeS3
           elems = path.split("/")
         end
 
-        if elems.size == 0
-          raise UnsupportedOperation
-        elsif elems.size == 1
+        if elems.size == 1 || (s_req.bucket && elems.size == 0)
           s_req.type = Request::DELETE_BUCKET
           s_req.query = query
         else
